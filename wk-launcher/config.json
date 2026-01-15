@@ -1,0 +1,15 @@
+{
+  "discord": {
+    "client_id": "1381802508602707998",
+    "redirect_port": 12345,
+    "redirect_uri": "http://localhost:12345/callback",
+    "use_pkce": true,
+    "scopes": ["identify", "email"]
+  },
+  "github": {
+    "owner": "nicqsizaccent",
+    "repo": "wonderfulkillers",
+    "news_path": "launcher/news.json",
+    "downloads_path": "launcher/downloads.json"
+  }
+}
