@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RePublic OF WonderfulKillers Launcher</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 50%, #16213e 100%);
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        .title-bar {
+            height: 40px;
+            background: rgba(15, 15, 30, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            -webkit-app-region: drag;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.3);
+        }
+
+        .title-bar-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #667eea;
+            letter-spacing: 1px;
+        }
+
+        .title-bar-controls {
+            display: flex;
+            gap: 10px;
+            -webkit-app-region: no-drag;
+        }
+
+        .title-bar-btn {
+            width: 30px;
+            height: 30px;
+            border: none;
+            background: transparent;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .title-bar-btn:hover {
+            background: rgba(102, 126, 234, 0.2);
+        }
+
+        .title-bar-btn.close:hover {
+            background: rgba(244, 67, 54, 0.3);
+        }
+
+        .container {
+            display: flex;
+            height: calc(100vh - 40px);
+        }
+
+        .sidebar {
+            width: 250px;
+            background: rgba(15, 15, 30, 0.8);
+            border-right: 1px solid rgba(102, 126, 234, 0.3);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .user-info {
+            padding: 15px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .user-name {
+            text-align: center;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .nav-item {
+            padding: 15px;
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #fff;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-item:hover {
+            background: rgba(102, 126, 234, 0.2);
+            transform: translateX(5px);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-color: #667eea;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .card {
+            background: rgba(15, 15, 30, 0.8);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(102, 126, 234, 0.6);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 15, 30, 0.5);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(102, 126, 234, 0.5);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(102, 126, 234, 0.7);
+        }
+
+        .version-badge {
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            padding: 8px 15px;
+            background: rgba(102, 126, 234, 0.2);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 20px;
+            color: #a0a0a0;
+            font-size: 0.85rem;
+            font-weight: 500;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body>
+    <div class="title-bar">
+        <div class="title-bar-title">RePublic OF WonderfulKillers</div>
+        <div class="title-bar-controls">
+            <button class="title-bar-btn" id="minimizeBtn">−</button>
+            <button class="title-bar-btn" id="maximizeBtn">□</button>
+            <button class="title-bar-btn close" id="closeBtn">×</button>
+        </div>
+    </div>
+
+    <div class="version-badge" id="versionBadge">v1.0.0</div>
+
+    <div class="container">
+        <div class="sidebar">
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <div class="user-name" id="userName">Kullanıcı</div>
+            </div>
+
+            <div class="nav-item active" data-section="voice">
+                🎤 Sesli Konuşma
+            </div>
+            <div class="nav-item" data-section="chat">
+                💬 Yazışma
+            </div>
+            <div class="nav-item" data-section="announcements">
+                📢 Duyurular
+            </div>
+            <div class="nav-item" data-section="downloads">
+                ⬇️ İndirmeler
+            </div>
+            <div class="nav-item" data-section="team">
+                👥 Ekip Bilgileri
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- Sesli Konuşma -->
+            <div class="content-section active" id="voice-section">
+                <h2 class="section-title">🎤 Sesli Konuşma</h2>
+                <div class="card">
+                    <h3>Sesli Kanallar</h3>
+                    <p>Sesli konuşma özelliği yakında eklenecek...</p>
+                    <button class="btn">Kanala Katıl</button>
+                    <button class="btn">Kanaldan Ayrıl</button>
+                </div>
+            </div>
+
+            <!-- Yazışma -->
+            <div class="content-section" id="chat-section">
+                <h2 class="section-title">💬 Yazışma</h2>
+                <div class="card">
+                    <h3>Chat Sistemi</h3>
+                    <p>Yazışma özelliği yakında eklenecek...</p>
+                    <div style="margin-top: 20px;">
+                        <input type="text" placeholder="Mesajınızı yazın..." style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid rgba(102, 126, 234, 0.3); background: rgba(15, 15, 30, 0.8); color: #fff; margin-bottom: 10px;">
+                        <button class="btn">Gönder</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Duyurular -->
+            <div class="content-section" id="announcements-section">
+                <h2 class="section-title">📢 Duyurular</h2>
+                <div class="card">
+                    <h3>Önemli Duyurular</h3>
+                    <p>Duyuru sistemi yakında eklenecek...</p>
+                </div>
+            </div>
+
+            <!-- İndirmeler -->
+            <div class="content-section" id="downloads-section">
+                <h2 class="section-title">⬇️ İndirmeler</h2>
+                <div class="card">
+                    <h3>Dosya İndirme</h3>
+                    <p>İndirme özelliği yakında eklenecek...</p>
+                    <button class="btn">Dosya İndir</button>
+                </div>
+            </div>
+
+            <!-- Ekip Bilgileri -->
+            <div class="content-section" id="team-section">
+                <h2 class="section-title">👥 Ekip Bilgileri</h2>
+                <div class="card">
+                    <h3>Ekip Üyeleri</h3>
+                    <p>Ekip bilgileri yakında eklenecek...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Window controls
+        document.getElementById('minimizeBtn').addEventListener('click', () => {
+            if (window.electronAPI) {
+                window.electronAPI.minimizeWindow();
+            }
+        });
+
+        document.getElementById('maximizeBtn').addEventListener('click', () => {
+            if (window.electronAPI) {
+                window.electronAPI.maximizeWindow();
+            }
+        });
+
+        document.getElementById('closeBtn').addEventListener('click', () => {
+            if (window.electronAPI) {
+                window.electronAPI.closeWindow();
+            }
+        });
+
+        // Navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                // Remove active class from all items
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
+
+                // Add active class to clicked item
+                item.classList.add('active');
+                const sectionId = item.dataset.section + '-section';
+                document.getElementById(sectionId).classList.add('active');
+            });
+        });
+
+        // User data
+        if (window.electronAPI) {
+            window.electronAPI.onUserData((userData) => {
+                if (userData) {
+                    document.getElementById('userName').textContent = userData.username || 'Kullanıcı';
+                    const avatar = document.getElementById('userAvatar');
+                    if (userData.avatar) {
+                        avatar.style.backgroundImage = `url(${userData.avatar})`;
+                        avatar.style.backgroundSize = 'cover';
+                        avatar.textContent = '';
+                    } else {
+                        avatar.textContent = (userData.username || 'U')[0].toUpperCase();
+                    }
+                }
+            });
+
+            // Version bilgisini göster
+            window.electronAPI.getAppVersion().then(version => {
+                document.getElementById('versionBadge').textContent = `v${version}`;
+            });
+        }
+    </script>
+</body>
+</html>
