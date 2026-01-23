@@ -1,0 +1,2247 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RePublic OF WonderfulKillers Launcher</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #4A2C00 0%, #2a1a00 50%, #1a1000 100%);
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+        
+        /* Özel mouse imleci - macOS stilinde ama renklerimizde */
+        * {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><defs><filter id="shadow"><feDropShadow dx="1" dy="1" stdDeviation="1" flood-color="%234A2C00" flood-opacity="0.5"/></filter></defs><path d="M4 4 L4 24 L12 20 L16 24 L16 8 L12 12 Z" fill="%23CCA97A" filter="url(%23shadow)" stroke="%234A2C00" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/><circle cx="26" cy="6" r="2.5" fill="%234A2C00"/></svg>') 4 4, auto;
+        }
+        
+        button, a, input[type="text"], input[type="file"], select, .nav-item, .action-btn, .title-bar-btn {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><defs><filter id="shadow2"><feDropShadow dx="1" dy="1" stdDeviation="1" flood-color="%234A2C00" flood-opacity="0.5"/></filter></defs><path d="M4 4 L4 24 L12 20 L16 24 L16 8 L12 12 Z" fill="%23CCA97A" filter="url(%23shadow2)" stroke="%234A2C00" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/><circle cx="26" cy="6" r="3" fill="%234A2C00"/></svg>') 4 4, pointer !important;
+        }
+        
+        /* Kopyalama ve sürükleme engelleme */
+        * {
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            user-select: none !important;
+        }
+        
+        input[type="text"], textarea {
+            -webkit-user-select: text !important;
+            -moz-user-select: text !important;
+            -ms-user-select: text !important;
+            user-select: text !important;
+        }
+        
+        img {
+            -webkit-user-drag: none !important;
+            -khtml-user-drag: none !important;
+            -moz-user-drag: none !important;
+            -o-user-drag: none !important;
+            pointer-events: none;
+        }
+        
+        .title-bar img {
+            pointer-events: none !important;
+        }
+
+        .title-bar {
+            height: 45px;
+            background: linear-gradient(135deg, rgba(74, 44, 0, 0.98), rgba(74, 44, 0, 0.95));
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 18px;
+            -webkit-app-region: drag;
+            border-bottom: 2px solid rgba(204, 169, 122, 0.3);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .title-bar-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #CCA97A;
+            letter-spacing: 1.5px;
+            text-shadow: 0 0 10px rgba(204, 169, 122, 0.3);
+        }
+
+        .title-bar-controls {
+            display: flex;
+            gap: 10px;
+            -webkit-app-region: no-drag;
+        }
+
+        .title-bar-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: transparent;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .title-bar-btn:hover {
+            background: rgba(204, 169, 122, 0.25);
+            transform: scale(1.1);
+        }
+
+        .title-bar-btn.close:hover {
+            background: rgba(244, 67, 54, 0.4);
+            transform: scale(1.15);
+        }
+
+        .container {
+            display: flex;
+            height: calc(100vh - 40px);
+        }
+
+        .sidebar {
+            width: 280px;
+            min-width: 280px;
+            background: linear-gradient(180deg, rgba(74, 44, 0, 0.95) 0%, rgba(74, 44, 0, 0.85) 100%);
+            border-right: 2px solid rgba(204, 169, 122, 0.2);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+        }
+        .sidebar.collapsed {
+            width: 0 !important;
+            min-width: 0 !important;
+            padding: 0;
+            overflow: hidden;
+            border-right: none;
+        }
+        .sidebar.collapsed .sidebar-content { display: none !important; }
+        .sidebar-toggle-btn {
+            position: absolute;
+            right: -16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid rgba(204,169,122,0.6);
+            background: linear-gradient(135deg, #4A2C00, #2a1a00);
+            color: #CCA97A;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+        .sidebar-toggle-btn:hover { 
+            background: linear-gradient(135deg, #CCA97A, #b8956a); 
+            color: #4A2C00;
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 6px 16px rgba(204, 169, 122, 0.5);
+        }
+        .sidebar.collapsed .sidebar-toggle-btn { 
+            right: -16px;
+            transform: translateY(-50%) rotate(180deg);
+        }
+        
+        /* Sidebar gizlendiğinde sol üstte gösterilecek buton */
+        .sidebar-restore-btn {
+            position: fixed;
+            top: 50px;
+            left: 10px;
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            border: 2px solid rgba(204, 169, 122, 0.6);
+            background: linear-gradient(135deg, #4A2C00, #2a1a00);
+            color: #CCA97A;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            font-size: 20px;
+            font-weight: bold;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+        }
+        
+        .sidebar-restore-btn:hover {
+            background: linear-gradient(135deg, #CCA97A, #b8956a);
+            color: #4A2C00;
+            transform: scale(1.15);
+            box-shadow: 0 8px 20px rgba(204, 169, 122, 0.6);
+        }
+        
+        body.sidebar-hidden .sidebar-restore-btn {
+            display: flex !important;
+        }
+
+        .user-info {
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(74, 44, 0, 0.6), rgba(74, 44, 0, 0.4));
+            border-radius: 16px;
+            margin-bottom: 24px;
+            border: 2px solid rgba(204, 169, 122, 0.3);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .user-info:hover {
+            border-color: rgba(204, 169, 122, 0.5);
+            box-shadow: 0 6px 20px rgba(204, 169, 122, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .user-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #CCA97A, #b8956a);
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            font-weight: bold;
+            border: 3px solid rgba(204, 169, 122, 0.4);
+            box-shadow: 0 4px 16px rgba(204, 169, 122, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .user-info:hover .user-avatar {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(204, 169, 122, 0.4);
+        }
+
+        .user-name {
+            text-align: center;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .action-btn {
+            padding: 10px 14px;
+            background: rgba(74, 44, 0, 0.5);
+            border: 2px solid rgba(204, 169, 122, 0.3);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: #fff;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .action-btn:hover {
+            background: linear-gradient(135deg, rgba(204, 169, 122, 0.3), rgba(184, 149, 106, 0.2));
+            border-color: rgba(204, 169, 122, 0.6);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(204, 169, 122, 0.3);
+        }
+        
+        .action-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .action-btn.settings {
+            width: 48px;
+            padding: 10px;
+            font-size: 1.1rem;
+        }
+
+        .action-btn.logout {
+            flex: 1;
+        }
+
+
+        .user-actions-menu {
+            position: absolute;
+            background: rgba(74, 44, 0, 0.95);
+            border: 1px solid rgba(204, 169, 122, 0.3);
+            border-radius: 10px;
+            padding: 10px;
+            min-width: 200px;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: none;
+        }
+
+        .user-actions-menu.show {
+            display: block;
+        }
+
+        .user-action-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.2s;
+            color: #fff;
+        }
+
+        .user-action-item:hover {
+            background: rgba(204, 169, 122, 0.2);
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.8;
+            }
+        }
+
+        .message {
+            margin-bottom: 18px;
+            padding: 16px 18px;
+            background: linear-gradient(135deg, rgba(74, 44, 0, 0.4), rgba(74, 44, 0, 0.3));
+            border-radius: 12px;
+            border-left: 4px solid #CCA97A;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .message:hover {
+            background: linear-gradient(135deg, rgba(74, 44, 0, 0.5), rgba(74, 44, 0, 0.4));
+            border-left-color: #b8956a;
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(204, 169, 122, 0.2);
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .message-author {
+            font-weight: 600;
+            color: #CCA97A;
+        }
+
+        .message-time {
+            font-size: 0.8rem;
+            color: #a0a0a0;
+        }
+
+        .message-content {
+            color: #fff;
+            word-wrap: break-word;
+        }
+
+        .message-image {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .announcement-item {
+            padding: 15px;
+            background: rgba(204, 169, 122, 0.15);
+            border: 1px solid rgba(204, 169, 122, 0.3);
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .announcement-title {
+            font-weight: 600;
+            color: #CCA97A;
+            margin-bottom: 8px;
+        }
+
+        .announcement-content {
+            color: #fff;
+        }
+
+        .team-member {
+            padding: 18px 20px;
+            background: linear-gradient(135deg, rgba(74, 44, 0, 0.4), rgba(74, 44, 0, 0.3));
+            border: 2px solid rgba(204, 169, 122, 0.2);
+            border-radius: 14px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .team-member:hover {
+            border-color: rgba(204, 169, 122, 0.5);
+            box-shadow: 0 6px 16px rgba(204, 169, 122, 0.2);
+            transform: translateX(6px) translateY(-2px);
+            background: linear-gradient(135deg, rgba(74, 44, 0, 0.5), rgba(74, 44, 0, 0.4));
+        }
+
+        .team-member-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #CCA97A, #b8956a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border: 3px solid rgba(204, 169, 122, 0.4);
+            box-shadow: 0 4px 12px rgba(204, 169, 122, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .team-member:hover .team-member-avatar {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(204, 169, 122, 0.4);
+        }
+
+        .team-member-info {
+            flex: 1;
+        }
+
+        .team-member-name {
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .team-member-role {
+            font-size: 0.9rem;
+            color: #a0a0a0;
+        }
+
+        .nav-item {
+            padding: 16px 18px;
+            background: rgba(74, 44, 0, 0.4);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            color: #fff;
+            font-weight: 500;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #CCA97A, #b8956a);
+            transform: scaleY(0);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .nav-item:hover {
+            background: rgba(204, 169, 122, 0.15);
+            border-color: rgba(204, 169, 122, 0.4);
+            transform: translateX(8px);
+            box-shadow: 0 4px 16px rgba(204, 169, 122, 0.2);
+        }
+        
+        .nav-item:hover::before {
+            transform: scaleY(1);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, rgba(204, 169, 122, 0.25), rgba(184, 149, 106, 0.2));
+            border-color: #CCA97A;
+            box-shadow: 0 6px 24px rgba(204, 169, 122, 0.35), inset 0 0 20px rgba(204, 169, 122, 0.1);
+            transform: translateX(4px);
+        }
+        
+        .nav-item.active::before {
+            transform: scaleY(1);
+        }
+        
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            right: 12px;
+            width: 6px;
+            height: 6px;
+            background: #CCA97A;
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(204, 169, 122, 0.8);
+            animation: pulseDot 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.2); }
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 35px 40px;
+            overflow-y: auto;
+            background: linear-gradient(180deg, rgba(74, 44, 0, 0.1) 0%, transparent 100%);
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 35px;
+            background: linear-gradient(135deg, #CCA97A, #b8956a, #CCA97A);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-shadow: 0 0 30px rgba(204, 169, 122, 0.3);
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .card {
+            background: linear-gradient(135deg, rgba(74, 44, 0, 0.7), rgba(74, 44, 0, 0.5));
+            border: 2px solid rgba(204, 169, 122, 0.2);
+            border-radius: 18px;
+            padding: 28px;
+            margin-bottom: 24px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(204, 169, 122, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .card:hover::before {
+            left: 100%;
+        }
+
+        .card:hover {
+            border-color: rgba(204, 169, 122, 0.5);
+            box-shadow: 0 12px 40px rgba(204, 169, 122, 0.25);
+            transform: translateY(-4px) scale(1.01);
+        }
+
+        .btn {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #CCA97A, #b8956a);
+            color: #4A2C00;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            margin: 5px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(204, 169, 122, 0.3);
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 8px 24px rgba(204, 169, 122, 0.5);
+            border-color: rgba(204, 169, 122, 0.6);
+        }
+        
+        .btn:active {
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(74, 44, 0, 0.3);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #CCA97A, #b8956a);
+            border-radius: 5px;
+            border: 2px solid rgba(74, 44, 0, 0.3);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #b8956a, #CCA97A);
+            box-shadow: 0 0 8px rgba(204, 169, 122, 0.5);
+        }
+
+        .version-badge {
+            position: fixed;
+            bottom: 15px;
+            left: 15px;
+            padding: 10px 18px;
+            background: linear-gradient(135deg, rgba(74, 44, 0, 0.8), rgba(74, 44, 0, 0.6));
+            border: 2px solid rgba(204, 169, 122, 0.3);
+            border-radius: 25px;
+            color: #CCA97A;
+            font-size: 0.9rem;
+            font-weight: 600;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .version-badge:hover {
+            border-color: rgba(204, 169, 122, 0.5);
+            box-shadow: 0 6px 20px rgba(204, 169, 122, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-overlay.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal {
+            background: rgba(74, 44, 0, 0.95);
+            border: 1px solid rgba(204, 169, 122, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: slideIn 0.3s ease;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #CCA97A, #b8956a, #CCA97A);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background 0.2s;
+        }
+
+        .modal-close:hover {
+            background: rgba(204, 169, 122, 0.2);
+        }
+
+        .settings-item {
+            margin-bottom: 24px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(74, 44, 0, 0.5), rgba(74, 44, 0, 0.3));
+            border: 2px solid rgba(204, 169, 122, 0.2);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .settings-item:hover {
+            border-color: rgba(204, 169, 122, 0.4);
+            box-shadow: 0 4px 16px rgba(204, 169, 122, 0.15);
+        }
+
+        .settings-item label {
+            display: block;
+            margin-bottom: 10px;
+            color: #CCA97A;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .settings-item .value {
+            color: #fff;
+            font-weight: 600;
+        }
+        
+        .settings-item select {
+            transition: all 0.3s ease;
+        }
+        
+        .settings-item select:hover {
+            border-color: rgba(204, 169, 122, 0.5);
+            box-shadow: 0 2px 8px rgba(204, 169, 122, 0.2);
+        }
+        
+        .settings-item select:focus {
+            outline: none;
+            border-color: #CCA97A;
+            box-shadow: 0 0 0 3px rgba(204, 169, 122, 0.2);
+        }
+        
+        input[type="text"], input[type="file"], textarea {
+            padding: 12px 16px;
+            border: 2px solid rgba(204, 169, 122, 0.3);
+            border-radius: 10px;
+            background: rgba(74, 44, 0, 0.6);
+            color: #fff;
+            font-size: 0.95rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        input[type="text"]:hover, textarea:hover {
+            border-color: rgba(204, 169, 122, 0.5);
+            box-shadow: 0 2px 8px rgba(204, 169, 122, 0.15);
+        }
+        
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: #CCA97A;
+            box-shadow: 0 0 0 3px rgba(204, 169, 122, 0.2), 0 4px 12px rgba(204, 169, 122, 0.2);
+            background: rgba(74, 44, 0, 0.8);
+        }
+        
+        input[type="text"]::placeholder, textarea::placeholder {
+            color: rgba(204, 169, 122, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="title-bar">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <img src="assets/logo.png" alt="Logo" draggable="false" style="width: 24px; height: 24px; object-fit: contain;" id="titleBarLogo" onerror="this.style.display='none'">
+            <div class="title-bar-title">RePublic OF WonderfulKillers</div>
+        </div>
+        <div class="title-bar-controls">
+            <button class="title-bar-btn" id="minimizeBtn">−</button>
+            <button class="title-bar-btn" id="maximizeBtn">□</button>
+            <button class="title-bar-btn close" id="closeBtn">×</button>
+        </div>
+    </div>
+
+    <div class="version-badge" id="versionBadge">v1.0.0</div>
+    
+    <button class="sidebar-restore-btn" id="sidebarRestoreBtn" title="Menüyü göster" style="display:none;">☰</button>
+
+    <!-- Ayarlar Modal -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">⚙️ Ayarlar</h2>
+                <button class="modal-close" id="closeSettingsBtn">×</button>
+            </div>
+            <div class="settings-content">
+                <div class="settings-item">
+                    <label>Discord Bilgileri</label>
+                    <div class="value" id="discordUsername">-</div>
+                </div>
+                <div class="settings-item">
+                    <label>Discord ID</label>
+                    <div class="value" id="discordId">-</div>
+                </div>
+                <div class="settings-item">
+                    <label>E-posta</label>
+                    <div class="value" id="discordEmail">-</div>
+                </div>
+                <div class="settings-item" id="settingsTruckersmpBlock">
+                    <label data-i18n="sets_truckersmp">TruckersMP hesabı</label>
+                    <div id="settingsTruckersmpLinkStatus" style="margin:8px 0;"></div>
+                    <button type="button" class="btn" id="btnTruckersmpLink" style="margin-right:8px;" data-i18n="sets_link_account">Hesabı Bağla</button>
+                    <button type="button" class="btn" id="btnTruckersmpUnlink" style="display:none; background:rgba(200,80,80,0.8);" data-i18n="sets_unlink">Bağlantıyı Kaldır</button>
+                    <input type="text" id="truckersmpIdInput" placeholder="TruckersMP ID veya Steam ID (64)" style="width:100%; padding:12px 16px; border-radius:10px; border:2px solid rgba(204,169,122,0.3); background:rgba(74,44,0,0.6); color:#fff; margin-top:10px; display:none; font-size:0.95rem;">
+                    <button type="button" class="btn" id="btnTruckersmpConfirm" style="margin-top:6px; display:none;" data-i18n="sets_confirm">Bağla</button>
+                </div>
+                <div class="settings-item">
+                    <label data-i18n="sets_language">🌐 Dil / Language</label>
+                    <select id="settingsLanguage" style="width:100%; padding:12px; border-radius:8px; border:2px solid rgba(204,169,122,0.3); background:rgba(74,44,0,0.6); color:#fff; margin-top:8px; font-size:0.95rem; cursor:pointer; font-family:inherit;">
+                        <option value="tr">🇹🇷 Türkçe</option>
+                        <option value="en">🇬🇧 English</option>
+                        <option value="pl">🇵🇱 Polski</option>
+                        <option value="de">🇩🇪 Deutsch</option>
+                        <option value="az">🇦🇿 Azərbaycan</option>
+                        <option value="ru">🇷🇺 Русский</option>
+                        <option value="fr">🇫🇷 Français</option>
+                        <option value="es">🇪🇸 Español</option>
+                        <option value="it">🇮🇹 Italiano</option>
+                        <option value="pt">🇵🇹 Português</option>
+                        <option value="nl">🇳🇱 Nederlands</option>
+                        <option value="uk">🇺🇦 Українська</option>
+                        <option value="cs">🇨🇿 Čeština</option>
+                        <option value="sv">🇸🇪 Svenska</option>
+                        <option value="hu">🇭🇺 Magyar</option>
+                    </select>
+                </div>
+                <div class="settings-item">
+                    <label>🚛 TruckersMP Launcher</label>
+                    <div style="margin-top:10px;">
+                        <div class="value" id="settingsTruckersmpLauncherPath" style="margin-bottom:10px; word-break:break-all; font-size:0.85rem; color:#a0a0a0;">—</div>
+                        <button type="button" class="btn" id="btnSelectTruckersmpLauncher" style="width:100%; margin:0;">📁 Launcher Dosyasını Seç</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="sidebar" id="sidebar">
+            <button class="sidebar-toggle-btn" id="sidebarToggleBtn" title="Menüyü gizle">‹</button>
+            <div class="sidebar-content">
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <div class="user-name" id="userName">Kullanıcı</div>
+                <div class="user-actions">
+                    <button class="action-btn settings" id="settingsBtn" title="Ayarlar">
+                        ⚙️
+                    </button>
+                    <button class="action-btn logout" id="logoutBtn">
+                        🚪 Çıkış Yap
+                    </button>
+                </div>
+            </div>
+
+            <div class="nav-item active" data-section="home">
+                🏠 Anasayfa
+            </div>
+            <div class="nav-item" data-section="chat">
+                💬 Yazışma
+            </div>
+            <div class="nav-item" data-section="announcements">
+                📢 Duyurular
+            </div>
+            <div class="nav-item" data-section="downloads">
+                ⬇️ İndirmeler
+            </div>
+            <div class="nav-item" data-section="team">
+                👥 Ekip Bilgileri
+            </div>
+            <div class="nav-item" data-section="driver-license">
+                🪪 Sürücü Lisansı
+            </div>
+            <div class="nav-item" data-section="live-map">
+                🗺️ Canlı Harita
+            </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- Anasayfa -->
+            <div class="content-section active" id="home-section">
+                <h2 class="section-title">🏠 Anasayfa</h2>
+                <div class="card" style="text-align:center;">
+                    <button class="btn" id="playBtn" style="font-size:1.2rem; padding:16px 48px;">▶ Oyna (TruckersMP)</button>
+                    <p id="playBtnHint" style="margin-top:10px; font-size:0.9rem; color:#a0a0a0;"></p>
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                    <div class="card">
+                        <h3 style="color:#CCA97A; margin-bottom:15px;" data-i18n="home_my_stats">Sizin istatistikler</h3>
+                        <div id="homeUserStats"></div>
+                        <h4 style="color:#a0a0a0; margin:15px 0 8px; font-size:0.95rem;" data-i18n="home_last_jobs">Son 5 yük</h4>
+                        <div id="homeLastJobs"></div>
+                    </div>
+                    <div class="card">
+                        <h3 style="color:#CCA97A; margin-bottom:15px;" data-i18n="home_vtc">VTC özeti</h3>
+                        <div id="homeVtcStats"></div>
+                        <h4 style="color:#a0a0a0; margin:15px 0 8px; font-size:0.95rem;" data-i18n="home_ranking">Km sıralaması</h4>
+                        <div id="homeRanking"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Yazışma -->
+            <div class="content-section" id="chat-section">
+                <h2 class="section-title">💬 Yazışma</h2>
+                <div class="card" style="display: flex; flex-direction: column; height: calc(100vh - 200px);">
+                    <div id="chatMessages" style="flex: 1; overflow-y: auto; padding: 15px; background: rgba(15, 15, 30, 0.5); border-radius: 10px; margin-bottom: 15px; min-height: 400px;">
+                        <!-- Mesajlar buraya gelecek -->
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: flex-end;">
+                        <button class="btn" id="emojiBtn" style="padding: 10px 15px; min-width: 50px;">😊</button>
+                        <input type="file" id="imageInput" accept="image/*" style="display: none;">
+                        <button class="btn" id="imageBtn" style="padding: 10px 15px; min-width: 50px;">📷</button>
+                        <input type="text" id="chatInput" placeholder="Mesajınızı yazın..." style="flex: 1; padding: 14px 18px; border-radius: 10px; border: 2px solid rgba(204, 169, 122, 0.3); background: rgba(74, 44, 0, 0.6); color: #fff; font-size: 0.95rem;">
+                        <button class="btn" id="sendBtn">Gönder</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Duyurular -->
+            <div class="content-section" id="announcements-section">
+                <h2 class="section-title">📢 Duyurular</h2>
+                <div class="card">
+                    <div id="announcementsList">
+                        <!-- Duyurular buraya gelecek -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- İndirmeler -->
+            <div class="content-section" id="downloads-section">
+                <h2 class="section-title">⬇️ İndirmeler</h2>
+                <div class="card">
+                    <h3>Dosya İndirme</h3>
+                    <div style="margin-top: 20px;">
+                        <input type="text" id="downloadUrl" placeholder="İndirme linkini girin..." style="width: 100%; padding: 14px 18px; border-radius: 10px; border: 2px solid rgba(204, 169, 122, 0.3); background: rgba(74, 44, 0, 0.6); color: #fff; margin-bottom: 15px; font-size: 0.95rem;">
+                        <button class="btn" id="downloadBtn">Dosya İndir</button>
+                    </div>
+                    <div id="downloadProgress" style="margin-top: 15px; display: none;">
+                        <div style="background: rgba(102, 126, 234, 0.2); height: 8px; border-radius: 4px; overflow: hidden;">
+                            <div id="downloadProgressBar" style="background: linear-gradient(135deg, #667eea, #764ba2); height: 100%; width: 0%; transition: width 0.3s;"></div>
+                        </div>
+                        <p id="downloadStatus" style="margin-top: 10px; color: #a0a0a0; font-size: 0.9rem;">İndiriliyor...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ekip Bilgileri -->
+            <div class="content-section" id="team-section">
+                <h2 class="section-title">👥 Ekip Bilgileri</h2>
+                <div class="card">
+                    <div id="teamMembersList"></div>
+                </div>
+            </div>
+
+            <!-- Sürücü Lisansı -->
+            <div class="content-section" id="driver-license-section">
+                <h2 class="section-title">🪪 Sürücü Lisansı</h2>
+                <div class="card">
+                    <p style="margin-bottom:15px; color:#a0a0a0;">Ayarlar'dan TruckersMP hesabınızı bağlayarak km'ye göre kademenizi görebilirsiniz.</p>
+                    <div id="driverLicenseStatus" style="margin-bottom:20px; padding:15px; background:rgba(204,169,122,0.1); border-radius:10px; border:1px solid rgba(204,169,122,0.3);"></div>
+                    <h3 style="color:#CCA97A; margin-bottom:12px;">Kademeler (toplam km)</h3>
+                    <div id="driverLicenseTiersList"></div>
+                </div>
+            </div>
+
+            <!-- Canlı Harita -->
+            <div class="content-section" id="live-map-section">
+                <h2 class="section-title">🗺️ Canlı Harita</h2>
+                <div class="card">
+                    <div style="margin-bottom:15px; display:flex; justify-content:space-between; align-items:center;">
+                        <p style="color:#a0a0a0; margin:0;">VTC üyelerinin oyun içi konumları</p>
+                        <button class="btn" id="refreshMapBtn" style="padding:8px 16px; font-size:0.9rem;">🔄 Yenile</button>
+                    </div>
+                    <div id="liveMapContainer" style="width:100%; height:600px; background:rgba(74,44,0,0.3); border-radius:10px; border:2px solid rgba(204,169,122,0.2); position:relative; overflow:hidden;">
+                        <div id="liveMapContent" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; flex-direction:column; color:#a0a0a0;">
+                            <div style="font-size:3rem; margin-bottom:15px;">🗺️</div>
+                            <div>Harita yükleniyor...</div>
+                        </div>
+                    </div>
+                    <div id="liveMapPlayers" style="margin-top:15px; max-height:300px; overflow-y:auto;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Kopyalama ve sürükleme engelleme
+        document.addEventListener('copy', (e) => {
+            e.preventDefault();
+            return false;
+        });
+        
+        document.addEventListener('cut', (e) => {
+            e.preventDefault();
+            return false;
+        });
+        
+        document.addEventListener('selectstart', (e) => {
+            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+                return false;
+            }
+        });
+        
+        document.addEventListener('dragstart', (e) => {
+            if (e.target.tagName === 'IMG') {
+                e.preventDefault();
+                return false;
+            }
+        });
+        
+        document.addEventListener('contextmenu', (e) => {
+            if (e.target.tagName === 'IMG') {
+                e.preventDefault();
+                return false;
+            }
+        });
+        
+        // Window controls
+        document.getElementById('minimizeBtn').addEventListener('click', () => {
+            if (window.electronAPI) {
+                window.electronAPI.minimizeWindow();
+            }
+        });
+
+        document.getElementById('maximizeBtn').addEventListener('click', () => {
+            if (window.electronAPI) {
+                window.electronAPI.maximizeWindow();
+            }
+        });
+
+        document.getElementById('closeBtn').addEventListener('click', () => {
+            if (window.electronAPI) {
+                window.electronAPI.closeWindow();
+            }
+        });
+
+        // i18n
+        const LANG = {
+            tr: { sets_truckersmp:'TruckersMP hesabı', sets_link_account:'Hesabı Bağla', sets_unlink:'Bağlantıyı Kaldır', sets_confirm:'Bağla', sets_linked:'Bağlı', sets_language:'Dil', sets_realtime:'Ortak sohbet', sets_realtime_help:'config.realtime.wsUrl veya REALTIME_WS_URL. Detay: SETUP_REALTIME.md', home_my_stats:'Sizin istatistikler', home_last_jobs:'Son 5 yük', home_vtc:'VTC özeti', home_ranking:'Km sıralaması', home_km:'km', home_jobs:'Yük', home_members:'Üye', home_total_km:'Toplam km', home_rank:'Sıra', home_play_ok:'TruckersMP başlatılıyor.', home_play_notfound:'TruckersMP Launcher bulunamadı. config.truckersmp.launcherPath veya TruckersMP kurulumu.' },
+            en: { sets_truckersmp:'TruckersMP account', sets_link_account:'Link account', sets_unlink:'Unlink', sets_confirm:'Link', sets_linked:'Linked', sets_language:'Language', sets_realtime:'Realtime chat', sets_realtime_help:'config.realtime.wsUrl or REALTIME_WS_URL. See SETUP_REALTIME.md', home_my_stats:'Your stats', home_last_jobs:'Last 5 jobs', home_vtc:'VTC overview', home_ranking:'KM ranking', home_km:'km', home_jobs:'Jobs', home_members:'Members', home_total_km:'Total km', home_rank:'Rank', home_play_ok:'Launching TruckersMP.', home_play_notfound:'TruckersMP Launcher not found. Set config.truckersmp.launcherPath or install TruckersMP.' },
+            pl: { sets_truckersmp:'Konto TruckersMP', sets_link_account:'Połącz konto', sets_unlink:'Odłącz', sets_confirm:'Połącz', sets_linked:'Połączono', sets_language:'Język', sets_realtime:'Czat', sets_realtime_help:'config.realtime.wsUrl lub REALTIME_WS_URL. Zob. SETUP_REALTIME.md', home_my_stats:'Twoje statystyki', home_last_jobs:'Ostatnie 5 zleceń', home_vtc:'VTC', home_ranking:'Ranking km', home_km:'km', home_jobs:'Zlecenia', home_members:'Członkowie', home_total_km:'Łącznie km', home_rank:'Miejsce', home_play_ok:'Uruchamiam TruckersMP.', home_play_notfound:'Nie znaleziono TruckersMP Launcher.' },
+            de: { sets_truckersmp:'TruckersMP-Konto', sets_link_account:'Konto verknüpfen', sets_unlink:'Trennen', sets_confirm:'Verknüpfen', sets_linked:'Verknüpft', sets_language:'Sprache', sets_realtime:'Chat', sets_realtime_help:'config.realtime.wsUrl oder REALTIME_WS_URL. Siehe SETUP_REALTIME.md', home_my_stats:'Deine Stats', home_last_jobs:'Letzte 5 Aufträge', home_vtc:'VTC', home_ranking:'KM-Rangliste', home_km:'km', home_jobs:'Aufträge', home_members:'Mitglieder', home_total_km:'Gesamt km', home_rank:'Rang', home_play_ok:'TruckersMP wird gestartet.', home_play_notfound:'TruckersMP Launcher nicht gefunden.' },
+            az: { sets_truckersmp:'TruckersMP hesabı', sets_link_account:'Hesabı birləşdir', sets_unlink:'Ayır', sets_confirm:'Birləşdir', sets_linked:'Bağlı', sets_language:'Dil', sets_realtime:'Söhbət', sets_realtime_help:'config.realtime.wsUrl və ya REALTIME_WS_URL.', home_my_stats:'Sizin statistikalar', home_last_jobs:'Son 5 yük', home_vtc:'VTC', home_ranking:'Km sıralaması', home_km:'km', home_jobs:'Yük', home_members:'Üzvlər', home_total_km:'Cəmi km', home_rank:'Sıra', home_play_ok:'TruckersMP başladılır.', home_play_notfound:'TruckersMP Launcher tapılmadı.' },
+            ru: { sets_truckersmp:'Аккаунт TruckersMP', sets_link_account:'Привязать', sets_unlink:'Отвязать', sets_confirm:'Привязать', sets_linked:'Привязано', sets_language:'Язык', sets_realtime:'Чат', sets_realtime_help:'config.realtime.wsUrl или REALTIME_WS_URL.', home_my_stats:'Ваша статистика', home_last_jobs:'Последние 5 рейсов', home_vtc:'VTC', home_ranking:'Рейтинг км', home_km:'км', home_jobs:'Рейсы', home_members:'Участники', home_total_km:'Всего км', home_rank:'Место', home_play_ok:'Запуск TruckersMP.', home_play_notfound:'TruckersMP Launcher не найден.' },
+            fr: { sets_truckersmp:'Compte TruckersMP', sets_link_account:'Lier le compte', sets_unlink:'Délier', sets_confirm:'Lier', sets_linked:'Lié', sets_language:'Langue', sets_realtime:'Chat', sets_realtime_help:'config.realtime.wsUrl ou REALTIME_WS_URL.', home_my_stats:'Vos stats', home_last_jobs:'5 derniers jobs', home_vtc:'VTC', home_ranking:'Classement km', home_km:'km', home_jobs:'Jobs', home_members:'Membres', home_total_km:'Total km', home_rank:'Rang', home_play_ok:'Lancement TruckersMP.', home_play_notfound:'TruckersMP Launcher introuvable.' },
+            es: { sets_truckersmp:'Cuenta TruckersMP', sets_link_account:'Vincular cuenta', sets_unlink:'Desvincular', sets_confirm:'Vincular', sets_linked:'Vinculado', sets_language:'Idioma', sets_realtime:'Chat', sets_realtime_help:'config.realtime.wsUrl o REALTIME_WS_URL.', home_my_stats:'Tus estadísticas', home_last_jobs:'Últimos 5 trabajos', home_vtc:'VTC', home_ranking:'Ranking km', home_km:'km', home_jobs:'Trabajos', home_members:'Miembros', home_total_km:'Total km', home_rank:'Posición', home_play_ok:'Iniciando TruckersMP.', home_play_notfound:'TruckersMP Launcher no encontrado.' },
+            it: { sets_truckersmp:'Account TruckersMP', sets_link_account:'Collega account', sets_unlink:'Scollega', sets_confirm:'Collega', sets_linked:'Collegato', sets_language:'Lingua', sets_realtime:'Chat', sets_realtime_help:'config.realtime.wsUrl o REALTIME_WS_URL.', home_my_stats:'Le tue statistiche', home_last_jobs:'Ultimi 5 lavori', home_vtc:'VTC', home_ranking:'Classifica km', home_km:'km', home_jobs:'Lavori', home_members:'Membri', home_total_km:'Totale km', home_rank:'Posizione', home_play_ok:'Avvio TruckersMP.', home_play_notfound:'TruckersMP Launcher non trovato.' },
+            pt: { sets_truckersmp:'Conta TruckersMP', sets_link_account:'Vincular conta', sets_unlink:'Desvincular', sets_confirm:'Vincular', sets_linked:'Vinculado', sets_language:'Idioma', sets_realtime:'Chat', sets_realtime_help:'config.realtime.wsUrl ou REALTIME_WS_URL.', home_my_stats:'Suas estatísticas', home_last_jobs:'Últimos 5 trabalhos', home_vtc:'VTC', home_ranking:'Ranking km', home_km:'km', home_jobs:'Trabalhos', home_members:'Membros', home_total_km:'Total km', home_rank:'Posição', home_play_ok:'Iniciando TruckersMP.', home_play_notfound:'TruckersMP Launcher não encontrado.' },
+            nl: { sets_truckersmp:'TruckersMP-account', sets_link_account:'Koppel account', sets_unlink:'Ontkoppel', sets_confirm:'Koppel', sets_linked:'Gekoppeld', sets_language:'Taal', sets_realtime:'Chat', sets_realtime_help:'config.realtime.wsUrl of REALTIME_WS_URL.', home_my_stats:'Je stats', home_last_jobs:'Laatste 5 ritten', home_vtc:'VTC', home_ranking:'Km-ranglijst', home_km:'km', home_jobs:'Ritten', home_members:'Leden', home_total_km:'Totaal km', home_rank:'Rang', home_play_ok:'TruckersMP wordt gestart.', home_play_notfound:'TruckersMP Launcher niet gevonden.' },
+            uk: { sets_truckersmp:'Акаунт TruckersMP', sets_link_account:'Прив\'язати', sets_unlink:'Відв\'язати', sets_confirm:'Прив\'язати', sets_linked:'Прив\'язано', sets_language:'Мова', sets_realtime:'Чат', sets_realtime_help:'config.realtime.wsUrl або REALTIME_WS_URL.', home_my_stats:'Ваша статистика', home_last_jobs:'Останні 5 рейсів', home_vtc:'VTC', home_ranking:'Рейтинг км', home_km:'км', home_jobs:'Рейси', home_members:'Учасники', home_total_km:'Всього км', home_rank:'Місце', home_play_ok:'Запуск TruckersMP.', home_play_notfound:'TruckersMP Launcher не знайдено.' },
+            cs: { sets_truckersmp:'Účet TruckersMP', sets_link_account:'Propojit účet', sets_unlink:'Odpojit', sets_confirm:'Propojit', sets_linked:'Propojeno', sets_language:'Jazyk', sets_realtime:'Chat', sets_realtime_help:'config.realtime.wsUrl nebo REALTIME_WS_URL.', home_my_stats:'Vaše statistiky', home_last_jobs:'Posledních 5 zásilek', home_vtc:'VTC', home_ranking:'Žebříček km', home_km:'km', home_jobs:'Zásilky', home_members:'Členové', home_total_km:'Celkem km', home_rank:'Pořadí', home_play_ok:'Spouštím TruckersMP.', home_play_notfound:'TruckersMP Launcher nenalezen.' },
+            sv: { sets_truckersmp:'TruckersMP-konto', sets_link_account:'Länka konto', sets_unlink:'Avlänka', sets_confirm:'Länka', sets_linked:'Länkat', sets_language:'Språk', sets_realtime:'Chatt', sets_realtime_help:'config.realtime.wsUrl eller REALTIME_WS_URL.', home_my_stats:'Dina statistiker', home_last_jobs:'Senaste 5 jobb', home_vtc:'VTC', home_ranking:'Km-ranking', home_km:'km', home_jobs:'Jobb', home_members:'Medlemmar', home_total_km:'Totalt km', home_rank:'Placering', home_play_ok:'Startar TruckersMP.', home_play_notfound:'TruckersMP Launcher hittades inte.' },
+            hu: { sets_truckersmp:'TruckersMP fiók', sets_link_account:'Fiók összekapcsolása', sets_unlink:'Szétválasztás', sets_confirm:'Összekapcsolás', sets_linked:'Összekapcsolva', sets_language:'Nyelv', sets_realtime:'Csevegés', sets_realtime_help:'config.realtime.wsUrl vagy REALTIME_WS_URL.', home_my_stats:'A te statisztikáid', home_last_jobs:'Utolsó 5 fuvar', home_vtc:'VTC', home_ranking:'Km rangsor', home_km:'km', home_jobs:'Fuvark', home_members:'Tagok', home_total_km:'Összesen km', home_rank:'Helyezés', home_play_ok:'TruckersMP indítása.', home_play_notfound:'TruckersMP Launcher nem található.' }
+        };
+        function t(k){ const l=localStorage.getItem('launcher_lang')||'tr'; return (LANG[l]&&LANG[l][k])||(LANG.tr&&LANG.tr[k])||k; }
+        function applyI18n(){ document.querySelectorAll('[data-i18n]').forEach(el=>{ const v=t(el.dataset.i18n); if(v) el.textContent=v; }); }
+
+        // Sidebar aç/kapa
+        document.getElementById('sidebarToggleBtn').addEventListener('click', () => {
+            const sb = document.getElementById('sidebar');
+            sb.classList.add('collapsed');
+            document.body.classList.add('sidebar-hidden');
+        });
+        
+        // Sidebar geri getir
+        document.getElementById('sidebarRestoreBtn').addEventListener('click', () => {
+            const sb = document.getElementById('sidebar');
+            sb.classList.remove('collapsed');
+            document.body.classList.remove('sidebar-hidden');
+        });
+
+        // Navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
+                item.classList.add('active');
+                const sectionId = item.dataset.section + '-section';
+                document.getElementById(sectionId).classList.add('active');
+                if (item.dataset.section === 'home') loadDashboard();
+                if (item.dataset.section === 'driver-license') loadDriverLicense();
+                if (item.dataset.section === 'live-map') loadLiveMap();
+            });
+        });
+
+        // User data ve gerçek zamanlı bağlantı
+        let currentUserData = null;
+        let realtimeSocket = null;
+        let realtimeReconnectTimeout = null;
+        let userRolesMap = {}; // userId -> { displayRoles } (realtime + user-data)
+        
+        // Kalıcı TruckersMP ID'yi yükle
+        if (window.electronAPI?.getTruckersmpId) {
+            window.electronAPI.getTruckersmpId().then(saved => {
+                if (saved?.ok && saved.id) {
+                    localStorage.setItem('launcher_truckersmp_id', saved.id);
+                }
+            });
+        }
+
+        function connectRealtime() {
+            if (!currentUserData) return;
+            if (realtimeSocket && realtimeSocket.readyState === WebSocket.OPEN) return;
+
+            try {
+                if (!window.electronAPI || !window.electronAPI.getRealtimeUrl) {
+                    console.warn('Gerçek zamanlı URL alınamadı');
+                    return;
+                }
+
+                window.electronAPI.getRealtimeUrl().then((url) => {
+                    if (!url) return;
+                    const socket = new WebSocket(url);
+                    realtimeSocket = socket;
+
+                    socket.addEventListener('open', () => {
+                        const user = {
+                            id: currentUserData.id,
+                            name: currentUserData.displayName || currentUserData.username,
+                            avatar: currentUserData.avatar || null,
+                            displayRoles: currentUserData.displayRoles || []
+                        };
+                        socket.send(JSON.stringify({ type: 'hello', user }));
+                    });
+
+                    socket.addEventListener('message', (event) => {
+                        try {
+                            const msg = JSON.parse(event.data);
+                            if (msg.type === 'chat_history' && Array.isArray(msg.messages)) {
+                                chatMessagesList = msg.messages;
+                                renderMessages();
+                            } else if (msg.type === 'chat_message' && msg.message) {
+                                chatMessagesList.push(msg.message);
+                                renderMessages();
+                            } else if (msg.type === 'user_list' && msg.users) {
+                                Object.assign(userRolesMap, msg.users);
+                                if (typeof renderTeamMembers === 'function') renderTeamMembers();
+                            } else if (msg.type === 'user_joined' && msg.user) {
+                                userRolesMap[msg.user.id] = { displayRoles: msg.user.displayRoles || [] };
+                                if (typeof renderTeamMembers === 'function') renderTeamMembers();
+                            }
+                        } catch (error) {
+                            console.error('Realtime mesaj işleme hatası:', error);
+                        }
+                    });
+
+                    socket.addEventListener('close', () => {
+                        realtimeSocket = null;
+                        if (realtimeReconnectTimeout) clearTimeout(realtimeReconnectTimeout);
+                        realtimeReconnectTimeout = setTimeout(connectRealtime, 5000);
+                    });
+
+                    socket.addEventListener('error', () => {
+                        socket.close();
+                    });
+                });
+            } catch (error) {
+                console.error('Realtime bağlantı hatası:', error);
+            }
+        }
+
+        if (window.electronAPI) {
+            window.electronAPI.onUserData((userData) => {
+                currentUserData = userData;
+                if (userData) {
+                    const displayName = userData.displayName || userData.global_name || userData.username || 'Kullanıcı';
+                    document.getElementById('userName').textContent = displayName;
+                    const avatar = document.getElementById('userAvatar');
+                    if (userData.avatar) {
+                        avatar.style.backgroundImage = `url(${userData.avatar})`;
+                        avatar.style.backgroundSize = 'cover';
+                        avatar.textContent = '';
+                    } else {
+                        avatar.textContent = (displayName || 'U')[0].toUpperCase();
+                    }
+                    
+                    document.getElementById('discordUsername').textContent = displayName || '-';
+                    document.getElementById('discordId').textContent = userData.id || '-';
+                    document.getElementById('discordEmail').textContent = userData.email || '-';
+                    if (userData.displayRoles) userRolesMap[userData.id] = { displayRoles: userData.displayRoles };
+                    
+                    addUserToTeam(userData);
+                    checkModeratorAccess();
+                    connectRealtime();
+                }
+            });
+
+            // Version bilgisini göster
+            window.electronAPI.getAppVersion().then(version => {
+                document.getElementById('versionBadge').textContent = `v${version}`;
+            });
+        }
+
+        // Ayarlar modalı
+        const settingsModal = document.getElementById('settingsModal');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+
+        settingsBtn.addEventListener('click', async () => {
+            // Kalıcı ID'yi yükle
+            let id = (localStorage.getItem('launcher_truckersmp_id') || '').trim();
+            if (!id && window.electronAPI?.getTruckersmpId) {
+                const saved = await window.electronAPI.getTruckersmpId();
+                if (saved?.ok && saved.id) {
+                    id = saved.id;
+                    localStorage.setItem('launcher_truckersmp_id', id);
+                }
+            }
+            
+            const st = document.getElementById('settingsTruckersmpLinkStatus');
+            const link = document.getElementById('btnTruckersmpLink');
+            const unlink = document.getElementById('btnTruckersmpUnlink');
+            const inp = document.getElementById('truckersmpIdInput');
+            const confirm = document.getElementById('btnTruckersmpConfirm');
+            if (id) {
+                st.textContent = t('sets_linked') + ': ' + id;
+                link.style.display = 'none';
+                unlink.style.display = 'inline-block';
+                inp.style.display = 'none';
+                confirm.style.display = 'none';
+            } else {
+                st.textContent = '';
+                link.style.display = 'inline-block';
+                unlink.style.display = 'none';
+                inp.style.display = 'none';
+                confirm.style.display = 'none';
+            }
+            document.getElementById('settingsLanguage').value = localStorage.getItem('launcher_lang') || 'tr';
+            if (window.electronAPI && window.electronAPI.getTruckersmpLauncherPath) {
+                window.electronAPI.getTruckersmpLauncherPath().then(p => {
+                    document.getElementById('settingsTruckersmpLauncherPath').textContent = p || 'Bulunamadı — Dosya seçin';
+                });
+            }
+            settingsModal.classList.add('show');
+        });
+        
+        document.getElementById('btnSelectTruckersmpLauncher').addEventListener('click', async () => {
+            if (!window.electronAPI?.selectTruckersmpLauncher) return;
+            const r = await window.electronAPI.selectTruckersmpLauncher();
+            if (r && r.ok && r.path) {
+                document.getElementById('settingsTruckersmpLauncherPath').textContent = r.path;
+                if (typeof loadDashboard === 'function') loadDashboard();
+            } else if (!r.canceled) {
+                alert('Dosya seçilemedi: ' + (r.error || 'Bilinmeyen hata'));
+            }
+        });
+        document.getElementById('btnTruckersmpLink').addEventListener('click', () => {
+            document.getElementById('truckersmpIdInput').style.display = 'block';
+            document.getElementById('btnTruckersmpConfirm').style.display = 'inline-block';
+            document.getElementById('btnTruckersmpLink').style.display = 'none';
+        });
+        document.getElementById('btnTruckersmpConfirm').addEventListener('click', async () => {
+            const v = (document.getElementById('truckersmpIdInput').value || '').trim();
+            if (!v) return;
+            
+            // Önce ID'yi doğrula
+            if (window.electronAPI?.truckersmpPlayer) {
+                const pr = await window.electronAPI.truckersmpPlayer(v);
+                if (!pr?.ok) {
+                    alert('Geçersiz TruckersMP ID. Lütfen doğru ID girin.');
+                    return;
+                }
+            }
+            
+            // Kalıcı olarak kaydet
+            if (window.electronAPI?.saveTruckersmpId) {
+                await window.electronAPI.saveTruckersmpId(v);
+            }
+            localStorage.setItem('launcher_truckersmp_id', v);
+            
+            document.getElementById('settingsTruckersmpLinkStatus').textContent = t('sets_linked') + ': ' + v;
+            document.getElementById('truckersmpIdInput').value = '';
+            document.getElementById('truckersmpIdInput').style.display = 'none';
+            document.getElementById('btnTruckersmpConfirm').style.display = 'none';
+            document.getElementById('btnTruckersmpLink').style.display = 'inline-block';
+            document.getElementById('btnTruckersmpUnlink').style.display = 'inline-block';
+            if (typeof loadDashboard === 'function') loadDashboard();
+        });
+        document.getElementById('btnTruckersmpUnlink').addEventListener('click', async () => {
+            if (window.electronAPI?.saveTruckersmpId) {
+                await window.electronAPI.saveTruckersmpId(null);
+            }
+            localStorage.removeItem('launcher_truckersmp_id');
+            document.getElementById('settingsTruckersmpLinkStatus').textContent = '';
+            document.getElementById('btnTruckersmpUnlink').style.display = 'none';
+            document.getElementById('btnTruckersmpLink').style.display = 'inline-block';
+            document.getElementById('truckersmpIdInput').style.display = 'none';
+            document.getElementById('btnTruckersmpConfirm').style.display = 'none';
+            if (typeof loadDashboard === 'function') loadDashboard();
+        });
+        document.getElementById('settingsLanguage').addEventListener('change', function() {
+            localStorage.setItem('launcher_lang', this.value);
+            applyI18n();
+        });
+
+        closeSettingsBtn.addEventListener('click', () => {
+            settingsModal.classList.remove('show');
+        });
+
+        settingsModal.addEventListener('click', (e) => {
+            if (e.target === settingsModal) {
+                settingsModal.classList.remove('show');
+            }
+        });
+
+        // Çıkış yap modalı
+        const logoutModal = document.createElement('div');
+        logoutModal.className = 'modal-overlay';
+        logoutModal.id = 'logoutModal';
+        logoutModal.innerHTML = `
+            <div class="modal" style="max-width: 450px;">
+                <div class="modal-header">
+                    <h2 class="modal-title">🚪 Çıkış Yap</h2>
+                    <button class="modal-close" id="closeLogoutModal">×</button>
+                </div>
+                <div style="padding: 25px 0;">
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <div style="font-size: 4rem; margin-bottom: 15px;">⚠️</div>
+                        <p style="color: #fff; font-size: 1.1rem; margin-bottom: 10px; font-weight: 500;">Çıkış yapmak istediğinize emin misiniz?</p>
+                        <p style="color: #a0a0a0; font-size: 0.9rem;">Launcher'dan çıkış yaptıktan sonra tekrar giriş yapmanız gerekecek.</p>
+                    </div>
+                    <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                        <button class="btn" id="cancelLogoutBtn" style="background: rgba(74, 44, 0, 0.6); border: 2px solid rgba(204, 169, 122, 0.3); color: #fff; padding: 12px 24px;">İptal</button>
+                        <button class="btn" id="confirmLogoutBtn" style="background: linear-gradient(135deg, rgba(244, 67, 54, 0.9), rgba(211, 47, 47, 0.9)); color: #fff; padding: 12px 28px;">Çıkış Yap</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(logoutModal);
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            logoutModal.classList.add('show');
+        });
+
+        document.getElementById('closeLogoutModal').addEventListener('click', () => {
+            logoutModal.classList.remove('show');
+        });
+
+        document.getElementById('cancelLogoutBtn').addEventListener('click', () => {
+            logoutModal.classList.remove('show');
+        });
+
+        document.getElementById('confirmLogoutBtn').addEventListener('click', () => {
+            if (window.electronAPI) {
+                window.electronAPI.logout();
+            }
+        });
+
+        logoutModal.addEventListener('click', (e) => {
+            if (e.target === logoutModal) {
+                logoutModal.classList.remove('show');
+            }
+        });
+
+        // Yazışma Sistemi
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const emojiBtn = document.getElementById('emojiBtn');
+        const imageBtn = document.getElementById('imageBtn');
+        const imageInput = document.getElementById('imageInput');
+        let chatMessagesList = [];
+
+        // Gelişmiş emoji paleti
+        const emojiCategories = {
+            'Yüzler': ['😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊', '😇', '🥰', '😍', '🤩', '😘', '😗', '😚', '😙', '😋', '😛', '😜', '🤪', '😝', '🤑', '🤗', '🤭', '🤫', '🤔'],
+            'Duygular': ['🤐', '🤨', '😐', '😑', '😶', '😏', '😒', '🙄', '😬', '🤥', '😌', '😔', '😪', '🤤', '😴', '😷', '🤒', '🤕', '🤢', '🤮', '🤧', '🥵', '🥶', '😵', '🤯', '🤠', '🥳', '😎', '🤓', '🧐'],
+            'El İşaretleri': ['👋', '🤚', '🖐', '✋', '🖖', '👌', '🤏', '✌️', '🤞', '🤟', '🤘', '🤙', '👈', '👉', '👆', '🖕', '👇', '☝️', '👍', '👎', '✊', '👊', '🤛', '🤜', '👏', '🙌', '👐', '🤲', '🤝', '🙏'],
+            'Kalpler': ['❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💔', '❣️', '💕', '💞', '💓', '💗', '💖', '💘', '💝', '💟', '☮️', '✝️', '☪️', '🕉', '☸️', '✡️', '🔯', '🕎', '☯️', '☦️', '🛐'],
+            'Nesneler': ['🔥', '💯', '⭐', '🌟', '✨', '⚡', '☄️', '💥', '💢', '💫', '💦', '💨', '🕳️', '💣', '💬', '👁️', '🗨️', '🗯️', '💭', '💤', '🎉', '🎊', '🎈', '🎁', '🏆', '🥇', '🥈', '🥉', '⚽', '🏀']
+        };
+
+        // Emoji paleti modalı
+        const emojiPalette = document.createElement('div');
+        emojiPalette.className = 'modal-overlay';
+        emojiPalette.id = 'emojiPalette';
+        emojiPalette.style.display = 'none';
+        emojiPalette.innerHTML = `
+            <div class="modal" style="max-width: 500px; max-height: 400px;">
+                <div class="modal-header">
+                    <h2 class="modal-title">😊 Emoji Seç</h2>
+                    <button class="modal-close" id="closeEmojiPalette">×</button>
+                </div>
+                <div style="padding: 15px; overflow-y: auto; max-height: 300px;">
+                    ${Object.keys(emojiCategories).map(category => `
+                        <div style="margin-bottom: 20px;">
+                            <h3 style="color: #CCA97A; margin-bottom: 10px; font-size: 1rem;">${category}</h3>
+                            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                                ${emojiCategories[category].map(emoji => `
+                                    <button class="emoji-item" data-emoji="${emoji}" style="font-size: 1.5rem; padding: 8px; background: rgba(204, 169, 122, 0.1); border: 1px solid rgba(204, 169, 122, 0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                                        ${emoji}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+        document.body.appendChild(emojiPalette);
+
+        emojiBtn.addEventListener('click', () => {
+            emojiPalette.style.display = 'flex';
+        });
+
+        document.getElementById('closeEmojiPalette').addEventListener('click', () => {
+            emojiPalette.style.display = 'none';
+        });
+
+        emojiPalette.addEventListener('click', (e) => {
+            if (e.target === emojiPalette) {
+                emojiPalette.style.display = 'none';
+            }
+        });
+
+        // Emoji seçimi
+        emojiPalette.querySelectorAll('.emoji-item').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const emoji = btn.dataset.emoji;
+                chatInput.value += emoji;
+                emojiPalette.style.display = 'none';
+                chatInput.focus();
+            });
+        });
+
+        imageBtn.addEventListener('click', () => {
+            imageInput.click();
+        });
+
+        imageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > 10 * 1024 * 1024) {
+                    alert('Dosya boyutu 10MB\'dan büyük olamaz!');
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    sendMessage(null, event.target.result, file.name);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Mesajları localStorage'dan yükle
+        function loadMessages() {
+            try {
+                const saved = localStorage.getItem('launcher_chat_messages');
+                if (saved) {
+                    chatMessagesList = JSON.parse(saved);
+                    renderMessages();
+                }
+            } catch (error) {
+                console.error('Mesajlar yüklenirken hata:', error);
+            }
+        }
+
+        // Mesajları localStorage'a kaydet
+        function saveMessages() {
+            try {
+                localStorage.setItem('launcher_chat_messages', JSON.stringify(chatMessagesList));
+            } catch (error) {
+                console.error('Mesajlar kaydedilirken hata:', error);
+                // localStorage doluysa eski mesajları temizle
+                if (error.name === 'QuotaExceededError') {
+                    // En eski %20 mesajı sil
+                    const removeCount = Math.floor(chatMessagesList.length * 0.2);
+                    chatMessagesList = chatMessagesList.slice(removeCount);
+                    saveMessages();
+                }
+            }
+        }
+
+        function sendMessage(text, image, imageName) {
+            if (!text && !image) return;
+            if (!currentUserData) return;
+
+            const message = {
+                id: Date.now(),
+                author: currentUserData.displayName || currentUserData.username,
+                avatar: currentUserData.avatar,
+                text: text || '',
+                image: image || null,
+                imageName: imageName || null,
+                time: new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }),
+                date: new Date().toISOString()
+            };
+
+            if (!realtimeSocket || realtimeSocket.readyState !== WebSocket.OPEN) {
+                alert('Mesaj göndermek için gerçek zamanlı sunucuya bağlanılamadı.');
+                return;
+            }
+
+            try {
+                realtimeSocket.send(JSON.stringify({
+                    type: 'chat_message',
+                    message: message
+                }));
+            } catch (error) {
+                console.error('Mesaj gönderilemedi:', error);
+            }
+            chatInput.value = '';
+            imageInput.value = '';
+        }
+
+        function renderMessages() {
+            chatMessages.innerHTML = '';
+            chatMessagesList.forEach(msg => {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message';
+                
+                messageDiv.innerHTML = `
+                    <div class="message-header">
+                        <span class="message-author">${msg.author}</span>
+                        <span class="message-time">${msg.time}</span>
+                    </div>
+                    <div class="message-content">
+                        ${msg.text}
+                        ${msg.image ? `<img src="${msg.image}" alt="${msg.imageName}" class="message-image">` : ''}
+                    </div>
+                `;
+                chatMessages.appendChild(messageDiv);
+            });
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Drag & Drop görsel desteği
+        const chatInputArea = chatInput.closest('.card');
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            chatInputArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            chatInputArea.addEventListener(eventName, () => {
+                chatInputArea.style.border = '2px dashed rgba(204, 169, 122, 0.5)';
+                chatInputArea.style.backgroundColor = 'rgba(204, 169, 122, 0.1)';
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            chatInputArea.addEventListener(eventName, () => {
+                chatInputArea.style.border = '';
+                chatInputArea.style.backgroundColor = '';
+            }, false);
+        });
+
+        chatInputArea.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.type.startsWith('image/')) {
+                    if (file.size > 10 * 1024 * 1024) {
+                        alert('Dosya boyutu 10MB\'dan büyük olamaz!');
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        sendMessage(null, event.target.result, file.name);
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    alert('Sadece görsel dosyaları yükleyebilirsiniz!');
+                }
+            }
+        }, false);
+
+        // Sohbet geçmişi realtime sunucudan chat_history ile gelir; loadMessages() artık kullanılmıyor
+
+        sendBtn.addEventListener('click', () => {
+            if (chatInput.value.trim()) {
+                sendMessage(chatInput.value.trim());
+            }
+        });
+
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendBtn.click();
+            }
+        });
+
+
+        // Duyurular
+        let announcements = [];
+        
+        // Duyuruları localStorage'dan yükle
+        function loadAnnouncements() {
+            try {
+                const saved = localStorage.getItem('launcher_announcements');
+                if (saved) {
+                    announcements = JSON.parse(saved);
+                } else {
+                    announcements = [
+                        { id: Date.now(), title: 'Hoş Geldiniz!', content: 'RePublic OF WonderfulKillers launcher\'a hoş geldiniz!', author: 'Sistem', date: new Date().toISOString() }
+                    ];
+                }
+                renderAnnouncements();
+            } catch (error) {
+                console.error('Duyurular yüklenirken hata:', error);
+            }
+        }
+
+        function saveAnnouncements() {
+            try {
+                localStorage.setItem('launcher_announcements', JSON.stringify(announcements));
+            } catch (error) {
+                console.error('Duyurular kaydedilirken hata:', error);
+            }
+        }
+
+        function renderAnnouncements() {
+            const list = document.getElementById('announcementsList');
+            list.innerHTML = '';
+            
+            if (announcements.length === 0) {
+                list.innerHTML = '<p style="color: #a0a0a0; text-align: center; padding: 40px;">Henüz duyuru yok</p>';
+                return;
+            }
+            
+            announcements.forEach(announcement => {
+                const div = document.createElement('div');
+                div.className = 'announcement-item';
+                div.innerHTML = `
+                    <div class="announcement-title">${announcement.title}</div>
+                    <div class="announcement-content">${announcement.content}</div>
+                    <div style="margin-top: 10px; font-size: 0.85rem; color: #a0a0a0;">
+                        ${announcement.author} - ${new Date(announcement.date).toLocaleDateString('tr-TR')}
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        // Moderatör ise duyuru ekleme butonu göster
+        function checkModeratorAccess() {
+            const announcementsSection = document.getElementById('announcements-section');
+            if (currentUserData && currentUserData.isModerator) {
+                // Duyuru ekleme butonu
+                const addBtn = document.createElement('button');
+                addBtn.className = 'btn';
+                addBtn.textContent = '+ Duyuru Ekle';
+                addBtn.style.marginBottom = '20px';
+                addBtn.addEventListener('click', () => {
+                    const title = prompt('Duyuru Başlığı:');
+                    if (title) {
+                        const content = prompt('Duyuru İçeriği:');
+                        if (content) {
+                            announcements.unshift({
+                                id: Date.now(),
+                                title: title,
+                                content: content,
+                                author: currentUserData.username,
+                                date: new Date().toISOString()
+                            });
+                            saveAnnouncements();
+                            renderAnnouncements();
+                        }
+                    }
+                });
+                const list = document.getElementById('announcementsList');
+                if (list && !list.previousElementSibling || list.previousElementSibling !== addBtn) {
+                    list.parentNode.insertBefore(addBtn, list);
+                }
+            }
+        }
+        
+        loadAnnouncements();
+
+        // İndirmeler
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            const url = document.getElementById('downloadUrl').value;
+            if (url) {
+                const progressDiv = document.getElementById('downloadProgress');
+                const progressBar = document.getElementById('downloadProgressBar');
+                const status = document.getElementById('downloadStatus');
+                
+                progressDiv.style.display = 'block';
+                status.textContent = 'İndiriliyor...';
+                
+                // Simüle edilmiş indirme (gerçek implementasyon için backend gerekli)
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 10;
+                    progressBar.style.width = progress + '%';
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        status.textContent = 'İndirme tamamlandı!';
+                        setTimeout(() => {
+                            progressDiv.style.display = 'none';
+                            progressBar.style.width = '0%';
+                        }, 2000);
+                    }
+                }, 200);
+            }
+        });
+
+        // Anasayfa / Dashboard
+        async function loadDashboard() {
+            // Kalıcı ID'yi yükle
+            let pid = (localStorage.getItem('launcher_truckersmp_id') || '').trim();
+            if (!pid && window.electronAPI?.getTruckersmpId) {
+                const saved = await window.electronAPI.getTruckersmpId();
+                if (saved?.ok && saved.id) {
+                    pid = saved.id;
+                    localStorage.setItem('launcher_truckersmp_id', pid);
+                }
+            }
+            const uStats = document.getElementById('homeUserStats');
+            const uJobs = document.getElementById('homeLastJobs');
+            const vtcStats = document.getElementById('homeVtcStats');
+            const vtcRank = document.getElementById('homeRanking');
+            const playHint = document.getElementById('playBtnHint');
+            if (!uStats) return;
+
+            if (window.electronAPI && window.electronAPI.getTruckersmpLauncherPath) {
+                window.electronAPI.getTruckersmpLauncherPath().then(p => {
+                    playHint.textContent = p ? '' : t('home_play_notfound');
+                });
+            }
+
+            document.getElementById('playBtn').onclick = async () => {
+                if (!window.electronAPI?.launchTruckersmp) return;
+                const r = await window.electronAPI.launchTruckersmp();
+                if (r && r.ok) {
+                    playHint.textContent = 'ETS2 başlatılıyor...';
+                    // Oyun başladığında Discord presence güncelle
+                    setTimeout(() => {
+                        if (window.electronAPI?.updateDiscordPresence) {
+                            window.electronAPI.updateDiscordPresence({
+                                details: 'ETS2 oynuyor',
+                                state: 'Oyunda',
+                                country: 'Türkiye',
+                                truck: 'Scania'
+                            });
+                        }
+                    }, 3000);
+                } else if (r && r.error === 'ETS2_NOT_FOUND') {
+                    playHint.textContent = 'ETS2 bulunamadı. Steam üzerinden başlatmayı deneyin.';
+                } else {
+                    playHint.textContent = r?.error || 'Başlatılamadı';
+                }
+            };
+
+            if (pid && window.electronAPI?.truckersmpPlayer) {
+                const pr = await window.electronAPI.truckersmpPlayer(pid);
+                const d = (pr?.ok && pr?.data) ? (pr.data.response || pr.data.data || pr.data) : {};
+                const km = Math.floor(Number(d.distance ?? d.distanceDriven ?? d.totalDistance ?? d.km ?? 0) || 0);
+                const jobs = Math.floor(Number(d.deliveries ?? d.jobs ?? d.jobsCount ?? 0) || 0);
+                const exp = Math.floor(Number(d.experience ?? d.exp ?? d.xp ?? 0) || 0);
+                const level = Math.floor(Number(d.level ?? d.lvl ?? 0) || 0);
+                const playtime = Math.floor(Number(d.playtime ?? d.timePlayed ?? 0) || 0);
+                const hours = Math.floor(playtime / 3600);
+                const minutes = Math.floor((playtime % 3600) / 60);
+                const violations = Math.floor(Number(d.violations ?? d.violationCount ?? 0) || 0);
+                const banCount = Math.floor(Number(d.bans ?? d.banCount ?? 0) || 0);
+                
+                uStats.innerHTML = `
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:15px;">
+                        <div style="padding:12px; background:rgba(204,169,122,0.1); border-radius:10px; border:1px solid rgba(204,169,122,0.2);">
+                            <div style="color:#a0a0a0; font-size:0.85rem; margin-bottom:5px;">Toplam KM</div>
+                            <div style="color:#CCA97A; font-size:1.3rem; font-weight:700;">${km.toLocaleString('tr-TR')}</div>
+                        </div>
+                        <div style="padding:12px; background:rgba(204,169,122,0.1); border-radius:10px; border:1px solid rgba(204,169,122,0.2);">
+                            <div style="color:#a0a0a0; font-size:0.85rem; margin-bottom:5px;">Toplam Yük</div>
+                            <div style="color:#CCA97A; font-size:1.3rem; font-weight:700;">${jobs.toLocaleString('tr-TR')}</div>
+                        </div>
+                        <div style="padding:12px; background:rgba(204,169,122,0.1); border-radius:10px; border:1px solid rgba(204,169,122,0.2);">
+                            <div style="color:#a0a0a0; font-size:0.85rem; margin-bottom:5px;">Seviye</div>
+                            <div style="color:#CCA97A; font-size:1.3rem; font-weight:700;">${level || '—'}</div>
+                        </div>
+                        <div style="padding:12px; background:rgba(204,169,122,0.1); border-radius:10px; border:1px solid rgba(204,169,122,0.2);">
+                            <div style="color:#a0a0a0; font-size:0.85rem; margin-bottom:5px;">Oynama Süresi</div>
+                            <div style="color:#CCA97A; font-size:1.1rem; font-weight:700;">${hours > 0 ? hours + 's ' : ''}${minutes}dk</div>
+                        </div>
+                    </div>
+                    <div style="padding:10px; background:rgba(74,44,0,0.3); border-radius:8px; font-size:0.9rem;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                            <span style="color:#a0a0a0;">Deneyim:</span>
+                            <span style="color:#fff; font-weight:600;">${exp.toLocaleString('tr-TR')}</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                            <span style="color:#a0a0a0;">İhlaller:</span>
+                            <span style="color:${violations > 0 ? '#ff5252' : '#4caf50'}; font-weight:600;">${violations}</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between;">
+                            <span style="color:#a0a0a0;">Yasaklar:</span>
+                            <span style="color:${banCount > 0 ? '#ff5252' : '#4caf50'}; font-weight:600;">${banCount}</span>
+                        </div>
+                    </div>
+                `;
+                
+                // Son yükler (API'den gelmiyorsa placeholder)
+                uJobs.innerHTML = '<p style="color:#a0a0a0; font-style:italic;">Son yük bilgisi API\'den gelmiyor.</p>';
+            } else {
+                uStats.innerHTML = '<p style="color:#a0a0a0;">Hesap bağlı değil.</p><p style="font-size:0.9rem; color:#a0a0a0;">Ayarlar → Hesabı Bağla</p>';
+                uJobs.innerHTML = '<p style="color:#a0a0a0;">—</p>';
+            }
+
+            if (window.electronAPI?.truckersmpVtc) {
+                const vr = await window.electronAPI.truckersmpVtc();
+                const v = (vr?.ok && vr?.data) ? (vr.data.response || vr.data.data || vr.data) : {};
+                const name = v.name || v.vtc?.name || '—';
+                const mCount = v.membersCount ?? v.memberCount ?? v.members?.length ?? v.playersCount ?? 0;
+                const members = v.members || v.memberIds || [];
+                
+                // VTC toplam km hesapla
+                let totalKm = 0;
+                let list = [];
+                if (Array.isArray(members) && members.length) {
+                    for (const m of members.slice(0, 30)) {
+                        const id = typeof m === 'object' ? (m.id ?? m.playerId ?? m.steamId) : m;
+                        if (!id) continue;
+                        try {
+                            const r = await (window.electronAPI?.truckersmpPlayer && window.electronAPI.truckersmpPlayer(id));
+                            const d = (r?.ok && r?.data) ? (r.data.response || r.data.data || r.data) : {};
+                            const km = Math.floor(Number(d.distance ?? d.distanceDriven ?? d.km ?? 0) || 0);
+                            totalKm += km;
+                            list.push({ id: String(id), name: d.name || d.nickname || d.username || id, km });
+                        } catch (e) {
+                            console.warn('Üye verisi alınamadı:', id, e);
+                        }
+                    }
+                }
+                
+                vtcStats.innerHTML = `
+                    <div style="margin-bottom:15px;">
+                        <div style="font-size:1.2rem; color:#CCA97A; font-weight:700; margin-bottom:10px;">${name}</div>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                            <div style="padding:10px; background:rgba(204,169,122,0.1); border-radius:8px;">
+                                <div style="color:#a0a0a0; font-size:0.85rem;">Üye Sayısı</div>
+                                <div style="color:#CCA97A; font-size:1.1rem; font-weight:700;">${mCount}</div>
+                            </div>
+                            <div style="padding:10px; background:rgba(204,169,122,0.1); border-radius:8px;">
+                                <div style="color:#a0a0a0; font-size:0.85rem;">Toplam KM</div>
+                                <div style="color:#CCA97A; font-size:1.1rem; font-weight:700;">${totalKm.toLocaleString('tr-TR')}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                if (list.length && pid) {
+                    list.sort((a,b)=>b.km-a.km);
+                    const idx = list.findIndex(x=>String(x.id)===String(pid));
+                    const rank = idx>=0 ? idx+1 : '—';
+                    vtcRank.innerHTML = `
+                        <div style="margin-bottom:10px; padding:10px; background:rgba(204,169,122,0.15); border-radius:8px;">
+                            <div style="color:#CCA97A; font-weight:700;">Sizin Sıranız: <span style="color:#fff;">${rank}</span></div>
+                        </div>
+                        <div style="max-height:300px; overflow-y:auto;">
+                            ${list.slice(0,15).map((x,i)=>`
+                                <div style="padding:8px 12px; margin:4px 0; background:rgba(74,44,0,0.4); border-radius:8px; border-left:3px solid ${String(x.id)===String(pid) ? '#CCA97A' : 'rgba(204,169,122,0.3)'};">
+                                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                                        <div>
+                                            <span style="color:#a0a0a0; font-size:0.9rem;">${i+1}.</span>
+                                            <span style="color:#fff; font-weight:600; margin-left:8px;">${x.name}</span>
+                                        </div>
+                                        <span style="color:#CCA97A; font-weight:600;">${x.km.toLocaleString('tr-TR')} km</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                } else {
+                    vtcRank.innerHTML = '<p style="color:#a0a0a0;">Sıralama verisi yükleniyor...</p>';
+                }
+            } else {
+                vtcStats.innerHTML = '<p style="color:#a0a0a0;">—</p>';
+                vtcRank.innerHTML = '<p style="color:#a0a0a0;">—</p>';
+            }
+        }
+
+        // Sürücü Lisansı
+        async function loadDriverLicense() {
+            const statusEl = document.getElementById('driverLicenseStatus');
+            const tiersEl = document.getElementById('driverLicenseTiersList');
+            if (!statusEl || !tiersEl) return;
+            statusEl.textContent = 'Yükleniyor...';
+            tiersEl.innerHTML = '';
+
+            if (!window.electronAPI?.getDriverLicenseConfig || !window.electronAPI?.truckersmpPlayer) {
+                statusEl.innerHTML = 'Launcher API kullanılamıyor.';
+                return;
+            }
+            const { tiers } = await window.electronAPI.getDriverLicenseConfig();
+            if (tiers && tiers.length) {
+                tiersEl.innerHTML = tiers.map((t, i) =>
+                    `<div style="padding:8px 12px; margin:4px 0; background:rgba(204,169,122,0.1); border-radius:8px; border:1px solid rgba(204,169,122,0.2);">
+                        <strong>${t.km.toLocaleString('tr-TR')} km</strong> — ${t.name}
+                    </div>`
+                ).join('');
+            }
+
+            // Kalıcı ID'yi yükle
+            let id = (localStorage.getItem('launcher_truckersmp_id') || '').trim();
+            if (!id && window.electronAPI?.getTruckersmpId) {
+                const saved = await window.electronAPI.getTruckersmpId();
+                if (saved?.ok && saved.id) {
+                    id = saved.id;
+                    localStorage.setItem('launcher_truckersmp_id', id);
+                }
+            }
+            
+            if (!id) {
+                statusEl.innerHTML = 'Ayarlar\'dan TruckersMP hesabınızı <b>Hesabı Bağla</b> ile bağlayın.';
+                return;
+            }
+            const res = await window.electronAPI.truckersmpPlayer(id);
+            if (!res.ok) {
+                statusEl.innerHTML = 'Veri alınamadı: ' + (res.error || 'Bilinmeyen hata');
+                return;
+            }
+            const d = res.data?.response || res.data?.data || res.data || {};
+            const km = Math.floor(Number(d.distance ?? d.distanceDriven ?? d.totalDistance ?? d.mpDistance ?? d.km ?? 0) || 0);
+            const arr = [...(tiers || [])].sort((a, b) => b.km - a.km);
+            const tier = arr.find(t => km >= t.km) || arr[arr.length - 1] || { name: 'Aday Sürücü' };
+            statusEl.innerHTML = `<b>${km.toLocaleString('tr-TR')} km</b> — Kademe: <b>${tier.name}</b>`;
+        }
+
+        // Ekip Bilgileri (Ekibimiz)
+        let teamMembers = [];
+        
+        // Ekip üyelerini localStorage'dan yükle
+        function loadTeamMembers() {
+            try {
+                const saved = localStorage.getItem('launcher_team_members');
+                if (saved) {
+                    teamMembers = JSON.parse(saved);
+                }
+                renderTeamMembers();
+            } catch (error) {
+                console.error('Ekip üyeleri yüklenirken hata:', error);
+            }
+        }
+
+        function saveTeamMembers() {
+            try {
+                localStorage.setItem('launcher_team_members', JSON.stringify(teamMembers));
+            } catch (error) {
+                console.error('Ekip üyeleri kaydedilirken hata:', error);
+            }
+        }
+
+        // Kullanıcı giriş yaptığında ekibe ekle
+        function addUserToTeam(userData) {
+            if (!userData) return;
+            const disp = userData.displayName || userData.username;
+            const existingMember = teamMembers.find(m => m.id === userData.id);
+            if (!existingMember) {
+                teamMembers.push({
+                    id: userData.id,
+                    name: disp,
+                    avatar: userData.avatar,
+                    displayRoles: userData.displayRoles || [],
+                    role: userData.isModerator ? 'Moderatör' : 'Üye',
+                    isModerator: userData.isModerator || false,
+                    lastSeen: new Date().toISOString(),
+                    isOnline: true
+                });
+            } else {
+                existingMember.lastSeen = new Date().toISOString();
+                existingMember.isOnline = true;
+                existingMember.name = disp;
+                existingMember.avatar = userData.avatar;
+                existingMember.displayRoles = userData.displayRoles || existingMember.displayRoles;
+                if (userData.isModerator) { existingMember.role = 'Moderatör'; existingMember.isModerator = true; }
+            }
+            saveTeamMembers();
+            renderTeamMembers();
+        }
+
+        // Çevrimiçi durumunu güncelle
+        function updateOnlineStatus() {
+            if (currentUserData) {
+                const member = teamMembers.find(m => m.id === currentUserData.id);
+                if (member) {
+                    member.isOnline = true;
+                    member.lastSeen = new Date().toISOString();
+                }
+            }
+            
+            // Diğer kullanıcılar için çevrimdışı kontrolü (basit - gerçek uygulamada backend gerekli)
+            teamMembers.forEach(member => {
+                if (member.id !== currentUserData?.id) {
+                    const lastSeen = new Date(member.lastSeen);
+                    const now = new Date();
+                    const diffMinutes = (now - lastSeen) / (1000 * 60);
+                    if (diffMinutes > 5) {
+                        member.isOnline = false;
+                    }
+                }
+            });
+            
+            saveTeamMembers();
+            renderTeamMembers();
+        }
+
+        function renderTeamMembers() {
+            const list = document.getElementById('teamMembersList');
+            list.innerHTML = '';
+            
+            if (teamMembers.length === 0) {
+                list.innerHTML = '<p style="color: #a0a0a0; text-align: center; padding: 40px;">Henüz ekip üyesi yok</p>';
+                return;
+            }
+            
+            // Çevrimiçi kullanıcılar önce, çevrimdışı kullanıcılar sonra
+            const sortedMembers = [...teamMembers].sort((a, b) => {
+                if (a.isOnline && !b.isOnline) return -1;
+                if (!a.isOnline && b.isOnline) return 1;
+                return 0;
+            });
+            
+            sortedMembers.forEach(member => {
+                const div = document.createElement('div');
+                div.className = 'team-member';
+                div.innerHTML = `
+                    <div class="team-member-avatar" style="position:relative; background: ${member.avatar ? 'transparent' : 'linear-gradient(135deg, #CCA97A, #b8956a)'};">
+                        ${member.avatar ? `<img src="${member.avatar}" alt="${member.name}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">` : member.name[0].toUpperCase()}
+                        <div class="user-status-indicator ${member.isOnline ? 'speaking' : 'muted'}" style="position: absolute; bottom: 0; right: 0;"></div>
+                    </div>
+                    <div class="team-member-info" style="flex: 1;">
+                        <div style="font-weight: 600; color: #fff; margin-bottom: 5px;">${member.name}</div>
+                        <div style="font-size: 0.85rem; color: #a0a0a0;">
+                            ${([].concat((userRolesMap[member.id] && userRolesMap[member.id].displayRoles) || member.displayRoles || [])).join(', ') || member.role || ''} ${member.isOnline ? '🟢 Çevrimiçi' : '⚫ Çevrimdışı'}
+                        </div>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        }
+        
+        loadTeamMembers();
+        
+        // Her 30 saniyede bir çevrimiçi durumunu güncelle
+        if (typeof updateOnlineStatus === 'function') {
+            setInterval(updateOnlineStatus, 30000);
+        }
+
+        applyI18n();
+        // Canlı Harita
+        async function loadLiveMap() {
+            const mapContent = document.getElementById('liveMapContent');
+            const mapPlayers = document.getElementById('liveMapPlayers');
+            if (!mapContent || !mapPlayers) return;
+            
+            mapContent.innerHTML = '<div style="font-size:3rem; margin-bottom:15px;">⏳</div><div>Yükleniyor...</div>';
+            mapPlayers.innerHTML = '';
+            
+            if (!window.electronAPI?.truckersmpVtc) {
+                mapContent.innerHTML = '<div style="color:#ff5252;">API kullanılamıyor.</div>';
+                return;
+            }
+            
+            try {
+                const vr = await window.electronAPI.truckersmpVtc();
+                const v = (vr?.ok && vr?.data) ? (vr.data.response || vr.data.data || vr.data) : {};
+                const members = v.members || v.memberIds || [];
+                
+                // VTC üyeleri her zaman gösterilmeli
+                if (!Array.isArray(members) || !members.length) {
+                    mapContent.innerHTML = `
+                        <div style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                            <div style="font-size:3rem; margin-bottom:15px;">🗺️</div>
+                            <div style="color:#a0a0a0;">VTC üye listesi yükleniyor...</div>
+                        </div>
+                    `;
+                    mapPlayers.innerHTML = '<p style="color:#a0a0a0;">Üye listesi yükleniyor...</p>';
+                    return;
+                }
+                
+                // Tüm VTC üyelerini göster (online/offline fark etmez)
+                let onlinePlayers = [];
+                let playerData = [];
+                
+                for (const m of members.slice(0, 50)) {
+                    const id = typeof m === 'object' ? (m.id ?? m.playerId ?? m.steamId) : m;
+                    if (!id) continue;
+                    
+                    try {
+                        const pr = await window.electronAPI.truckersmpPlayer(id);
+                        const d = (pr?.ok && pr?.data) ? (pr.data.response || pr.data.data || pr.data) : {};
+                        const name = d.name || d.nickname || d.username || String(id);
+                        const isOnline = d.online || d.isOnline || false;
+                        const server = d.server || d.currentServer || null;
+                        const location = d.location || d.city || null;
+                        
+                        playerData.push({ id, name, isOnline, server, location, data: d });
+                        if (isOnline) onlinePlayers.push({ id, name, server, location, data: d });
+                    } catch (e) {
+                        // Hata durumunda bile üyeyi listeye ekle
+                        const name = typeof m === 'object' ? (m.name || m.username || String(id)) : String(id);
+                        playerData.push({ id, name, isOnline: false, server: null, location: null, data: {} });
+                    }
+                }
+                
+                // Harita görselleştirme - Her zaman VTC üyelerini göster
+                mapContent.innerHTML = `
+                    <div style="width:100%; height:100%; padding:20px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                        <div style="font-size:2rem; color:#CCA97A; margin-bottom:15px;">
+                            ${onlinePlayers.length > 0 ? `📍 ${onlinePlayers.length} Üye Online` : '🗺️ VTC Haritası'}
+                        </div>
+                        <div style="color:#a0a0a0; font-size:0.9rem; margin-bottom:20px;">
+                            ${onlinePlayers.length > 0 ? 'Oyunda aktif olan VTC üyeleri' : 'Şu anda oyunda aktif VTC üyesi yok'}
+                        </div>
+                        ${onlinePlayers.length > 0 ? `
+                            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:10px; width:100%; max-width:800px;">
+                                ${onlinePlayers.map(p => `
+                                    <div style="padding:12px; background:rgba(204,169,122,0.1); border-radius:8px; border:2px solid rgba(204,169,122,0.3);">
+                                        <div style="color:#CCA97A; font-weight:600; margin-bottom:5px;">${p.name}</div>
+                                        <div style="color:#a0a0a0; font-size:0.85rem;">
+                                            ${p.server ? `🌐 ${p.server}` : ''}
+                                            ${p.location ? `<br>📍 ${p.location}` : ''}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : `
+                            <div style="padding:20px; background:rgba(74,44,0,0.3); border-radius:10px; border:2px solid rgba(204,169,122,0.2);">
+                                <div style="color:#a0a0a0;">VTC üyeleri listesi aşağıda görüntüleniyor.</div>
+                            </div>
+                        `}
+                    </div>
+                `;
+                
+                // Oyuncu listesi
+                mapPlayers.innerHTML = `
+                    <h4 style="color:#CCA97A; margin-bottom:10px;">Tüm Üyeler (${playerData.length})</h4>
+                    <div style="display:grid; gap:8px;">
+                        ${playerData.map(p => `
+                            <div style="padding:10px; background:rgba(74,44,0,0.4); border-radius:8px; border-left:4px solid ${p.isOnline ? '#4caf50' : 'rgba(204,169,122,0.3)'}; display:flex; justify-content:space-between; align-items:center;">
+                                <div>
+                                    <div style="color:#fff; font-weight:600;">${p.name}</div>
+                                    <div style="color:#a0a0a0; font-size:0.85rem;">
+                                        ${p.isOnline ? '🟢 Online' : '⚫ Offline'}
+                                        ${p.server ? ` • ${p.server}` : ''}
+                                    </div>
+                                </div>
+                                <button class="btn" onclick="showPlayerDetails('${p.id}')" style="padding:6px 12px; font-size:0.85rem;">Detay</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } catch (error) {
+                mapContent.innerHTML = `<div style="color:#ff5252;">Hata: ${error.message}</div>`;
+            }
+        }
+        
+        function showPlayerDetails(playerId) {
+            // Oyuncu detaylarını göster (modal veya alert)
+            window.electronAPI?.truckersmpPlayer(playerId).then(res => {
+                const d = (res?.ok && res?.data) ? (res.data.response || res.data.data || res.data) : {};
+                const details = `
+Oyuncu: ${d.name || d.nickname || playerId}
+Online: ${d.online ? 'Evet' : 'Hayır'}
+Sunucu: ${d.server || '—'}
+Konum: ${d.location || d.city || '—'}
+KM: ${(d.distance || 0).toLocaleString('tr-TR')}
+Yük: ${d.deliveries || 0}
+                `.trim();
+                alert(details);
+            });
+        }
+        
+        document.getElementById('refreshMapBtn')?.addEventListener('click', () => {
+            loadLiveMap();
+        });
+        
+        loadDashboard();
+    </script>
+</body>
+</html>
