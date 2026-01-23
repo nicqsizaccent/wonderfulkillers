@@ -1,0 +1,24 @@
+directories:
+  output: dist
+  buildResources: build
+appId: com.republicofwk.launcher
+productName: RePublic OF WonderfulKillers
+publish:
+  provider: github
+  owner: nicqsizaccent
+  repo: wonderfulkillers
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: assets/logo.ico
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  runAfterFinish: true
+  deleteAppDataOnUninstall: false
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+files: []
+electronVersion: 27.3.11
